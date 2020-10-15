@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "40637938619",
+    "firebase_url": "https://simpletaxi-d0075.firebaseio.com",
+    "project_id": "simpletaxi-d0075",
+    "storage_bucket": "simpletaxi-d0075.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40637938619:android:19492d87d621d1a6f9229e",
+        "android_client_info": {
+          "package_name": "com.example.simpletaxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40637938619-esdqnf74fp5io4eliuhjkojglirdleel.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.simpletaxi",
+            "certificate_hash": "d15dc37ba5e29092e0154ae3b88284674b7b1e14"
+          }
+        },
+        {
+          "client_id": "40637938619-4mrieb8gih74ge6nensb8gklo7v5d41e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTpCgAHVEZRLlsOi4zPv325QQoNEJdu9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40637938619-4mrieb8gih74ge6nensb8gklo7v5d41e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
