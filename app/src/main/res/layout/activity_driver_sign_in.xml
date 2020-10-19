@@ -6,7 +6,7 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.simpletaxi.DriverSignInActivity">
+    tools:context=".DriverSignInActivity">
 
     <TextView
         android:text="Driver Sign In"
@@ -86,7 +86,7 @@
         android:background="@color/colorAccent"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

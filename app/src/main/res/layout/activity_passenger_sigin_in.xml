@@ -6,7 +6,7 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.simpletaxi.PassengerSignInActivity">
+    tools:context=".PassengerSignInActivity">
 
     <TextView
         android:text="Passenger Sign In"
@@ -86,9 +86,10 @@
         android:background="@color/colorAccent"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:ignore="OnClick" />
 
     <TextView
         android:id="@+id/toggleLoginSignUpTextView"
@@ -101,6 +102,7 @@
         android:textColor="@color/colorAccent"
         android:clickable="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:ignore="OnClick" />
 
 </LinearLayout>

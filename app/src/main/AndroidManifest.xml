@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.simpletaxi.DriverSignInActivity" />
-        <activity android:name="com.example.simpletaxi.PassengerSignInActivity" />
-        <activity android:name="com.example.simpletaxi.ChooseActivityMode" />
-        <activity android:name="com.example.simpletaxi.SplashScreenActivity">
+        <activity android:name=".DriverMapsActivity"></activity>
+        <activity android:name=".DriverSignInActivity" />
+        <activity android:name=".PassengerSignInActivity" />
+        <activity android:name=".ChooseActivityMode" />
+        <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
