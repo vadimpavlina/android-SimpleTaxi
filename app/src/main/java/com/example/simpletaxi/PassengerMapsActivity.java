@@ -52,7 +52,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
-public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class PassengerMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -78,7 +78,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_maps);
+        setContentView(R.layout.activity_passenger_maps);
 
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -90,7 +90,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 auth.signOut();
-                signOutDriver();
+                signOutPassenger();
             }
         });
 
@@ -112,17 +112,17 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     }
 
-    private void signOutDriver() {
+    private void signOutPassenger() {
 
-        String driverUserId = currentUser.getUid();
-        DatabaseReference drivers = FirebaseDatabase.getInstance()
+        String PassengerUserId = currentUser.getUid();
+        DatabaseReference passenger = FirebaseDatabase.getInstance()
                 .getReference()
-                .child("drivers");
+                .child("passenger");
 
-        GeoFire geoFire = new GeoFire(drivers);
-        geoFire.removeLocation(driverUserId);
+        GeoFire geoFire = new GeoFire(passenger);
+        geoFire.removeLocation(PassengerUserId);
 
-        Intent intent = new Intent(DriverMapsActivity.this,
+        Intent intent = new Intent(PassengerMapsActivity.this,
                 ChooseActivityMode.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -148,10 +148,10 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         if (currentLocation != null) {
 
             // Add a marker in Sydney and move the camera
-            LatLng driverLocation = new LatLng(currentLocation.getLatitude(),
+            LatLng passengerLocation = new LatLng(currentLocation.getLatitude(),
                     currentLocation.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(driverLocation).title("Driver location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(driverLocation));
+            mMap.addMarker(new MarkerOptions().position(passengerLocation).title("Passenger location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(passengerLocation));
         }
     }
 
@@ -185,12 +185,12 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                                     LocationSettingsResponse locationSettingsResponse) {
 
                                 if (ActivityCompat.checkSelfPermission(
-                                        DriverMapsActivity.this,
+                                        PassengerMapsActivity.this,
                                         Manifest.permission.ACCESS_FINE_LOCATION) !=
                                         PackageManager.PERMISSION_GRANTED &&
                                         ActivityCompat
                                                 .checkSelfPermission(
-                                                        DriverMapsActivity.this,
+                                                        PassengerMapsActivity.this,
                                                         Manifest.permission
                                                                 .ACCESS_COARSE_LOCATION) !=
                                                 PackageManager.PERMISSION_GRANTED) {
@@ -228,7 +228,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                                     ResolvableApiException resolvableApiException =
                                             (ResolvableApiException) e;
                                     resolvableApiException.startResolutionForResult(
-                                            DriverMapsActivity.this,
+                                            PassengerMapsActivity.this,
                                             CHECK_SETTINGS_CODE
                                     );
                                 } catch (IntentSender.SendIntentException sie) {
@@ -240,7 +240,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                                     .SETTINGS_CHANGE_UNAVAILABLE:
                                 String message =
                                         "Adjust location settings on your device";
-                                Toast.makeText(DriverMapsActivity.this, message,
+                                Toast.makeText(PassengerMapsActivity.this, message,
                                         Toast.LENGTH_LONG).show();
 
                                 isLocationUpdatesActive = false;
@@ -313,21 +313,21 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         if (currentLocation != null) {
 
-            LatLng driverLocation = new LatLng(currentLocation.getLatitude(),
+            LatLng PassengerLocation = new LatLng(currentLocation.getLatitude(),
                     currentLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(driverLocation));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(PassengerLocation));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-            mMap.addMarker(new MarkerOptions().position(driverLocation).title("Driver location"));
+            mMap.addMarker(new MarkerOptions().position(PassengerLocation).title("Passenger location"));
 
-            String driverUserId = currentUser.getUid();
-            DatabaseReference driversGeoFire = FirebaseDatabase.getInstance().getReference()
-                    .child("driversGeoFire");
-            DatabaseReference drivers = FirebaseDatabase.getInstance().getReference()
-                    .child("drivers");
-            drivers.setValue(true);
+            String passengerUserId = currentUser.getUid();
+            DatabaseReference passengerGeoFire = FirebaseDatabase.getInstance().getReference()
+                    .child("passengerGeoFire");
+            DatabaseReference passenger = FirebaseDatabase.getInstance().getReference()
+                    .child("passenger");
+            passenger.setValue(true);
 
-            GeoFire geoFire = new GeoFire(driversGeoFire);
-            geoFire.setLocation(driverUserId, new GeoLocation(currentLocation.getLatitude(),
+            GeoFire geoFire = new GeoFire(passengerGeoFire);
+            geoFire.setLocation(passengerUserId, new GeoLocation(currentLocation.getLatitude(),
                     currentLocation.getLongitude()));
         }
 
@@ -378,7 +378,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                         @Override
                         public void onClick(View v) {
                             ActivityCompat.requestPermissions(
-                                    DriverMapsActivity.this,
+                                    PassengerMapsActivity.this,
                                     new String[]{
                                             Manifest.permission.ACCESS_FINE_LOCATION
                                     },
@@ -392,7 +392,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         } else {
 
             ActivityCompat.requestPermissions(
-                    DriverMapsActivity.this,
+                    PassengerMapsActivity.this,
                     new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION
                     },
