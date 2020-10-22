@@ -1,11 +1,10 @@
 package com.example.simpletaxi;
 
-import android.content.Intent;
 import androidx.annotation.NonNull;
-
-
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class PassengerSignInActivity extends AppCompatActivity {
 
-    private static final String TAG = "PassengerSingInActivity";
+    private static final String TAG = "PassengerSignInActivity";
 
     private TextInputLayout textInputEmail;
     private TextInputLayout textInputName;
@@ -46,7 +45,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
             startActivity(new Intent(PassengerSignInActivity.this,
                     PassengerMapsActivity.class));
         }
-
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputName = findViewById(R.id.textInputName);
         textInputPassword = findViewById(R.id.textInputPassword);
@@ -54,8 +52,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
 
         loginSignUpButton = findViewById(R.id.loginSignUpButton);
         toggleLoginSignUpTextView = findViewById(R.id.toggleLoginSignUpTextView);
-
-
     }
 
     private boolean validateEmail() {
@@ -70,7 +66,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
             textInputEmail.setError("");
             return true;
         }
-
     }
 
     private boolean validateName() {
@@ -88,7 +83,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
             textInputName.setError("");
             return true;
         }
-
     }
 
     private boolean validatePassword() {
@@ -106,7 +100,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
             textInputPassword.setError("");
             return true;
         }
-
     }
 
     private boolean validateConfirmPassword() {
@@ -123,7 +116,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
             textInputPassword.setError("");
             return true;
         }
-
     }
 
     public void loginSignUpUser(View view) {
@@ -198,9 +190,6 @@ public class PassengerSignInActivity extends AppCompatActivity {
                                 }
                             });
         }
-
-
-
     }
 
     public void toggleLoginSignUp(View view) {
@@ -216,6 +205,5 @@ public class PassengerSignInActivity extends AppCompatActivity {
             toggleLoginSignUpTextView.setText("Or, sign up");
             textInputConfirmPassword.setVisibility(View.GONE);
         }
-
     }
 }

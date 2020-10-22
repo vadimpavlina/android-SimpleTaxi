@@ -1,5 +1,10 @@
 package com.example.simpletaxi;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -7,20 +12,18 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import androidx.fragment.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
-
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,6 +40,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,12 +49,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
+import java.util.List;
 
 public class PassengerMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -70,10 +75,17 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     private boolean isLocationUpdatesActive;
 
-    Button settingsButton, signOutButton;
+    private Button settingsButton, signOutButton, bookTaxiButton;
 
-    FirebaseAuth auth;
-    FirebaseUser currentUser;
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
+
+    private DatabaseReference driversGeoFire;
+    private DatabaseReference nearestDriverLocation;
+    private int searchRadius = 1;
+    private boolean isDriverFound = false;
+    private String nearestDriverId;
+    private Marker driverMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +97,27 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
         settingsButton = findViewById(R.id.settingsButton);
         signOutButton = findViewById(R.id.signOutButton);
+        bookTaxiButton = findViewById(R.id.bookTaxiButton);
+
+        driversGeoFire = FirebaseDatabase.getInstance().getReference()
+                .child("driversGeoFire");
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 auth.signOut();
                 signOutPassenger();
+            }
+        });
+
+        bookTaxiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookTaxiButton.setText("Getting your taxi...");
+
+                gettingNearestTaxi();
+
             }
         });
 
@@ -112,15 +139,140 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     }
 
+    private void gettingNearestTaxi() {
+
+
+        GeoFire geoFire = new GeoFire(driversGeoFire);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(
+                currentLocation.getLatitude(),
+                currentLocation.getLongitude()
+        ), searchRadius);
+
+        geoQuery.removeAllListeners();
+
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+
+                if (!isDriverFound) {
+
+                    isDriverFound = true;
+                    nearestDriverId = key;
+
+                    getNearestDriverLocation();
+
+                }
+
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+                if (!isDriverFound) {
+
+                    searchRadius++;
+                    gettingNearestTaxi();
+
+                }
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void getNearestDriverLocation() {
+
+        bookTaxiButton.setText("Getting your driver location...");
+
+        nearestDriverLocation = FirebaseDatabase.getInstance().getReference()
+                .child("driversGeoFire").child(nearestDriverId).child("l");
+
+        nearestDriverLocation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+
+                    List<Object> driverLocationParameters =
+                            (List<Object>) dataSnapshot.getValue();
+
+                    double latitude = 0;
+                    double longitude = 0;
+
+                    if (driverLocationParameters.get(0) != null) {
+
+                        latitude = Double.parseDouble(
+                                driverLocationParameters.get(0).toString()
+                        );
+
+                    }
+
+                    if (driverLocationParameters.get(1) != null) {
+
+                        longitude = Double.parseDouble(
+                                driverLocationParameters.get(1).toString()
+                        );
+
+                    }
+
+                    LatLng driverLatLng = new LatLng(latitude, longitude);
+
+                    if (driverMarker != null) {
+                        driverMarker.remove();
+                    }
+
+                    Location driverLocation = new Location("");
+                    driverLocation.setLatitude(latitude);
+                    driverLocation.setLongitude(longitude);
+
+                    float distanceToDriver =
+                            driverLocation.distanceTo(currentLocation);
+
+                    bookTaxiButton.setText("Distance to driver: " +
+                            distanceToDriver);
+
+
+                    driverMarker = mMap.addMarker(
+                            new MarkerOptions().position(driverLatLng)
+                                    .title("Your driver is here")
+                    );
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private void signOutPassenger() {
 
-        String PassengerUserId = currentUser.getUid();
-        DatabaseReference passenger = FirebaseDatabase.getInstance()
+        String passengerUserId = currentUser.getUid();
+        DatabaseReference passengers = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("passenger");
 
-        GeoFire geoFire = new GeoFire(passenger);
-        geoFire.removeLocation(PassengerUserId);
+        GeoFire geoFire = new GeoFire(passengers);
+        geoFire.removeLocation(passengerUserId);
 
         Intent intent = new Intent(PassengerMapsActivity.this,
                 ChooseActivityMode.class);
@@ -313,20 +465,20 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
         if (currentLocation != null) {
 
-            LatLng PassengerLocation = new LatLng(currentLocation.getLatitude(),
+            LatLng passengerLocation = new LatLng(currentLocation.getLatitude(),
                     currentLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(PassengerLocation));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(passengerLocation));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-            mMap.addMarker(new MarkerOptions().position(PassengerLocation).title("Passenger location"));
+            mMap.addMarker(new MarkerOptions().position(passengerLocation).title("Passenger location"));
 
             String passengerUserId = currentUser.getUid();
-            DatabaseReference passengerGeoFire = FirebaseDatabase.getInstance().getReference()
+            DatabaseReference passengersGeoFire = FirebaseDatabase.getInstance().getReference()
                     .child("passengerGeoFire");
-            DatabaseReference passenger = FirebaseDatabase.getInstance().getReference()
+            DatabaseReference passengers = FirebaseDatabase.getInstance().getReference()
                     .child("passenger");
-            passenger.setValue(true);
+            passengers.setValue(true);
 
-            GeoFire geoFire = new GeoFire(passengerGeoFire);
+            GeoFire geoFire = new GeoFire(passengersGeoFire);
             geoFire.setLocation(passengerUserId, new GeoLocation(currentLocation.getLatitude(),
                     currentLocation.getLongitude()));
         }

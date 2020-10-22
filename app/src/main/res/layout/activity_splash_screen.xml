@@ -20,11 +20,13 @@
         <TextView
             android:gravity="center_horizontal"
             android:layout_marginTop="200dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/btn_rounded_log_in"
             android:textSize="50sp"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
             android:text="Taxi Order"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -5,16 +5,19 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
+    android:background="#FCF2FD"
     android:layout_height="match_parent"
     tools:context=".PassengerSignInActivity">
 
     <TextView
         android:text="Passenger Sign In"
         android:textAllCaps="true"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
         android:gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:textColor="@color/colorAccent"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/btn_rounded_log_in"
         android:textSize="30sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -91,7 +94,7 @@
         android:id="@+id/loginSignUpButton"
         android:text="Sign Up"
         android:onClick="loginSignUpUser"
-        android:background="@color/colorAccent"
+        android:background="@drawable/btn_rounded_sign_in"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:layout_marginTop="50dp"
@@ -106,11 +109,15 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:textSize="20sp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/btn_rounded_log_in"
         android:textColor="@color/colorAccent"
         android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
         tools:ignore="OnClick" />
 
 </LinearLayout>

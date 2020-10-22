@@ -3,8 +3,6 @@ package com.example.simpletaxi;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
-
-
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,8 +53,6 @@ public class DriverSignInActivity extends AppCompatActivity {
 
         loginSignUpButton = findViewById(R.id.loginSignUpButton);
         toggleLoginSignUpTextView = findViewById(R.id.toggleLoginSignUpTextView);
-
-
     }
 
     private boolean validateEmail() {
@@ -158,8 +154,6 @@ public class DriverSignInActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                         //updateUI(null);
                                     }
-
-                                    // ...
                                 }
                             });
         } else {
@@ -168,7 +162,6 @@ public class DriverSignInActivity extends AppCompatActivity {
                     !validateConfirmPassword()) {
                 return;
             }
-
             auth.createUserWithEmailAndPassword(
                     textInputEmail.getEditText().getText().toString().trim(),
                     textInputPassword.getEditText().getText().toString().trim())
@@ -195,13 +188,9 @@ public class DriverSignInActivity extends AppCompatActivity {
                                         //updateUI(null);
                                     }
 
-                                    // ...
                                 }
                             });
         }
-
-
-
     }
 
     public void toggleLoginSignUp(View view) {
